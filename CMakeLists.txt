@@ -10,6 +10,10 @@ include_directories(./include)
 
 find_package(sdbus-c++ REQUIRED)
 
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "..." FORCE)
+endif()
+
 
 set(LIBPIRADIO_SOURCES
   src/frequency.cxx
@@ -28,6 +32,8 @@ target_link_libraries(piradio PUBLIC
   protobuf
   SDBusCpp::sdbus-c++
   systemd)
+
+install(TARGETS piradio)
 
 set(CPACK_SET_DESTDIR true)
 set(CPACK_INSTALL_PREFIX /)
