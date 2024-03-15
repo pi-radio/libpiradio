@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.22)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++20 -g")
 
@@ -23,7 +23,29 @@ set(LIBPIRADIO_SOURCES
   src/cmdline.cxx
   src/fpga.cxx)
 
+set(LIBPIRADIO_HEADERS
+  include/piradio/cmdline.hpp
+  include/piradio/dbus.hpp
+  include/piradio/freq_module.hpp
+  include/piradio/nrange.hpp
+  include/piradio/services.hpp
+  include/piradio/daemon.hpp
+  include/piradio/fpga.hpp
+  include/piradio/frequency.hpp
+  include/piradio/sdjournal.hpp
+  )
+
 add_library(piradio STATIC ${LIBPIRADIO_SOURCES})
+
+target_sources(piradio INTERFACE ${LIBPIRADIO_SOURCES})
+
+set_target_properties(piradio PROPERTIES PUBLIC_HEADER "${LIBPIRADIO_HEADERS}")
+
+#target_sources(piradio
+#  PUBLIC
+#  FILE_SET public-headers
+#  TYPE HEADERS
+#  FILES include/piradio/*.hpp)
 
 target_link_libraries(piradio PUBLIC
   grpc++_reflection
@@ -33,7 +55,7 @@ target_link_libraries(piradio PUBLIC
   SDBusCpp::sdbus-c++
   systemd)
 
-install(TARGETS piradio)
+install(TARGETS piradio PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/piradio/)
 
 set(CPACK_SET_DESTDIR true)
 set(CPACK_INSTALL_PREFIX /)
