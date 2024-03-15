@@ -37,15 +37,7 @@ set(LIBPIRADIO_HEADERS
 
 add_library(piradio STATIC ${LIBPIRADIO_SOURCES})
 
-target_sources(piradio INTERFACE ${LIBPIRADIO_SOURCES})
-
 set_target_properties(piradio PROPERTIES PUBLIC_HEADER "${LIBPIRADIO_HEADERS}")
-
-#target_sources(piradio
-#  PUBLIC
-#  FILE_SET public-headers
-#  TYPE HEADERS
-#  FILES include/piradio/*.hpp)
 
 target_link_libraries(piradio PUBLIC
   grpc++_reflection
@@ -55,7 +47,7 @@ target_link_libraries(piradio PUBLIC
   SDBusCpp::sdbus-c++
   systemd)
 
-install(TARGETS piradio PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/piradio/)
+install(TARGETS piradio PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/piradio/ COMPONENT LIBPIRADIO)
 
 set(CPACK_SET_DESTDIR true)
 set(CPACK_INSTALL_PREFIX /)
@@ -63,6 +55,7 @@ set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_NAME "piradio")
 set(CPACK_PACKAGE_VENDOR "Pi Radio Inc.")
 set(CPACK_PACKAGE_CONTACT "Michael Zappe <zapman@pi-rad.io>")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Michael Zappe <zapman@pi-rad.io>")
 set(CPACK_DEBIAN_PACKAGE_VERSION 0.1.2)
 set(CPACK_DEBIAN_PACKAGE_RELEASE 7)
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/deb/postinst")
@@ -77,26 +70,10 @@ set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
   
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Global Pi Radio Description")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Global Pi Radio Description Summary")
-  
-  #
-  # base installation variables
-  #  
-  #set(CPACK_DEBIAN_BASE_DISPLAY_NAME "piradio-base")
-  #set(CPACK_COMPONENT_BASE_DESCRIPTION "Pi Radio base files")
-  #set(CPACK_DEBIAN_BASE_DESCRIPTION "Pi Radio base files")
-  #set(CPACK_DEBIAN_BASE_PACKAGE_DEPENDS "python3(>=3.10.6)")
-  #set(CPACK_DEBIAN_BASE_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/base/deb/conffiles;${CMAKE_CURRENT_SOURCE_DIR}/base/deb/postinst")
-  #message(STATUS "base package control: ${CPACK_DEBIAN_BASE_PACKAGE_CONTROL_EXTRA}")
-  
-  #
-  # fpgad installation variables
-  #
-  #set(CPACK_COMPONENT_FPGAD_DISPLAY_NAME "piradio-fpgad")
-  #set(CPACK_COMPONENT_FPGAD_DESCRIPTION "Pi Radio FPGA mangement daemon")
 
-  #piradio_service_deb(FPGAD "Pi Radio FPGA mangement daemon")
-  #piradio_service_deb(ZCU111D "Pi Radio ZCU111 mangement daemon")
-  #piradio_service_deb(RFDCD "Pi Radio RFDC mangement daemon")
-  #piradio_service_deb(SAMPLED "Pi Radio non-realtime sample capture daemon")
-  
-  #set(CPACK_COMPONENTS_ALL BASE LIBRFDC FPGAD ZCU111D RFDCD SAMPLED)
+set(CPACK_COMPONENTS_ALL LIBPIRADIO)
+
+set(CPACK_COMPONENT_LIBPIRADIO_DISPLAY_NAME "piradio-libpiradio")
+set(CPACK_COMPONENT_LIBPIRADIO_DESCRIPTION "Base ultility library for Pi Radio software")
+
+include(CPack)
